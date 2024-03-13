@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz</title>
+  <style>
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quiz</h1>
+  <form id="quizForm">
+    <div id="question"></div>
+    <div id="options"></div>
+    <button type="submit">Submit</button>
+  </form>
+  <script>
+    const questions = [
+      {
+        question: 'What is the capital of France?',
+        options: ['Paris', 'Berlin', 'Madrid', 'Rome'],
+        correctAnswer: 'Paris',
+        score: 10,
+      },
+      {
+        question: 'What is the capital of Germany?',
+        options: ['Paris', 'Berlin', 'Madrid', 'Rome'],
+        correctAnswer: 'Berlin',
+        score: 10,
+      },
+    ];
+
+    const currentQuestion = questions[0];
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.getElementById('options');
+    const quizForm = document.getElementById('quizForm');
+
+    questionElement.textContent = currentQuestion.question;
+
+    currentQuestion.options.forEach((option, index) => {
+      const radioButton = document.createElement('input');
+      radioButton.type = 'radio';
+      radioButton.name = 'option';
+      radioButton.value = option;
+      radioButton.id = `option${index + 1}`;
+
+      const label = document.createElement('label');
+      label.textContent = option;
+      label.htmlFor = `option${index + 1}`;
+
+      optionsElement.appendChild(radioButton);
+      optionsElement.appendChild(label);
+      optionsElement.appendChild(document.createElement('br'));
+    });
+
+    quizForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const selectedOption = document.querySelector('input[name="option"]:checked');
+
+      if (!selectedOption) {
+        alert('Please select an option');
+        return;
+      }
+
+      const userScore = selectedOption.value === currentQuestion.correctAnswer ? currentQuestion.score : 0;
+
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        resetQuiz();
+      } else {
+        // Show the final score and give an option to restart the quiz
+        const finalScore = questions.reduce((total, question) => total + question.score, 0);
+        alert(`Your final score is ${finalScore}`);
+        resetQuiz();
+      }
+    });
+
+    const resetQuiz = () => {
+      questionElement.textContent = currentQuestion.question;
+      optionsElement.innerHTML = '';
+      currentQuestion.options.forEach((option, index) => {
+        const radioButton = document.createElement('input');
+        radioButton.type = 'radio';
+        radioButton.name = 'option';
+        radioButton.value = option;
+        radioButton.id = `option${index + 1}`;
+
+        const label = document.createElement('label');
+        label.textContent = option;
+        label.htmlFor = `option${index + 1}`;
+
+        optionsElement.appendChild(radioButton);
+        optionsElement.appendChild(label);
+        optionsElement.appendChild(document.createElement('br'));
+      });
+
+      quizForm.reset();
+    };
+
+    resetQuiz();
+  </script>
+</body>
+</html>
